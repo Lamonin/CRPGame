@@ -11,7 +11,7 @@ namespace crpg
     {
     public:
         invent();
-        void envert();
+        void envert(); //ТЕСТОВЫЕ ШТУЧКИ
     };
 }
 
