@@ -5,5 +5,14 @@
 #ifndef CRPGAME_ENGINE_H
 #define CRPGAME_ENGINE_H
 
+namespace crpg
+{
+    class invent
+    {
+    public:
+        invent();
+        void envert();
+    };
+}
 
 #endif //CRPGAME_ENGINE_H
