@@ -7,12 +7,7 @@
 
 namespace crpg
 {
-    class invent
-    {
-    public:
-        invent();
-        void envert(); //ТЕСТОВЫЕ ШТУЧКИ
-    };
+
 }
 
 #endif //CRPGAME_ENGINE_H
