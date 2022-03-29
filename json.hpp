@@ -5918,7 +5918,7 @@ class json_sax_dom_parser
 
         if (JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
         {
-            JSON_THROW(out_of_range::create(408, "excessive object size: " + std::to_string(len), *ref_stack.back()));
+            JSON_THROW(out_of_range::create(408, "excessive object list_size: " + std::to_string(len), *ref_stack.back()));
         }
 
         return true;
@@ -5944,7 +5944,7 @@ class json_sax_dom_parser
 
         if (JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
         {
-            JSON_THROW(out_of_range::create(408, "excessive array size: " + std::to_string(len), *ref_stack.back()));
+            JSON_THROW(out_of_range::create(408, "excessive array list_size: " + std::to_string(len), *ref_stack.back()));
         }
 
         return true;
@@ -6099,7 +6099,7 @@ class json_sax_dom_callback_parser
         // check object limit
         if (ref_stack.back() && JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
         {
-            JSON_THROW(out_of_range::create(408, "excessive object size: " + std::to_string(len), *ref_stack.back()));
+            JSON_THROW(out_of_range::create(408, "excessive object list_size: " + std::to_string(len), *ref_stack.back()));
         }
 
         return true;
@@ -6169,7 +6169,7 @@ class json_sax_dom_callback_parser
         // check array limit
         if (ref_stack.back() && JSON_HEDLEY_UNLIKELY(len != static_cast<std::size_t>(-1) && len > ref_stack.back()->max_size()))
         {
-            JSON_THROW(out_of_range::create(408, "excessive array size: " + std::to_string(len), *ref_stack.back()));
+            JSON_THROW(out_of_range::create(408, "excessive array list_size: " + std::to_string(len), *ref_stack.back()));
         }
 
         return true;
@@ -6644,7 +6644,7 @@ class lexer : public lexer_base<BasicJsonType>
     This function scans a string according to Sect. 7 of RFC 8259. While
     scanning, bytes are escaped and copied into buffer token_buffer. Then the
     function returns successfully, token_buffer is *not* null-terminated (as it
-    may contain \0 bytes), and token_buffer.size() is the number of bytes in the
+    may contain \0 bytes), and token_buffer.list_size() is the number of bytes in the
     string.
 
     @return token_type::value_string if string could be successfully scanned,
@@ -9247,7 +9247,7 @@ class binary_reader
 
     /*!
     @param[in] len  the length of the array or static_cast<std::size_t>(-1) for an
-                    array of indefinite size
+                    array of indefinite list_size
     @param[in] tag_handler how CBOR tags should be treated
     @return whether array creation completed
     */
@@ -9285,7 +9285,7 @@ class binary_reader
 
     /*!
     @param[in] len  the length of the object or static_cast<std::size_t>(-1) for an
-                    object of indefinite size
+                    object of indefinite list_size
     @param[in] tag_handler how CBOR tags should be treated
     @return whether object creation completed
     */
@@ -10047,8 +10047,8 @@ class binary_reader
     }
 
     /*!
-    @param[out] result  determined size
-    @return whether size determination completed
+    @param[out] result  determined list_size
+    @return whether list_size determination completed
     */
     bool get_ubjson_size_value(std::size_t& result)
     {
@@ -10112,24 +10112,24 @@ class binary_reader
             default:
             {
                 auto last_token = get_token_string();
-                return sax->parse_error(chars_read, last_token, parse_error::create(113, chars_read, exception_message(input_format_t::ubjson, "expected length type specification (U, i, I, l, L) after '#'; last byte: 0x" + last_token, "size"), BasicJsonType()));
+                return sax->parse_error(chars_read, last_token, parse_error::create(113, chars_read, exception_message(input_format_t::ubjson, "expected length type specification (U, i, I, l, L) after '#'; last byte: 0x" + last_token, "list_size"), BasicJsonType()));
             }
         }
     }
 
     /*!
-    @brief determine the type and size for a container
+    @brief determine the type and list_size for a container
 
-    In the optimized UBJSON format, a type and a size can be provided to allow
+    In the optimized UBJSON format, a type and a list_size can be provided to allow
     for a more compact representation.
 
-    @param[out] result  pair of the size and the type
+    @param[out] result  pair of the list_size and the type
 
     @return whether pair creation completed
     */
     bool get_ubjson_size_type(std::pair<std::size_t, char_int_type>& result)
     {
-        result.first = string_t::npos; // size
+        result.first = string_t::npos; // list_size
         result.second = 0; // type
 
         get_ignore_noop();
@@ -10150,7 +10150,7 @@ class binary_reader
                     return false;
                 }
                 auto last_token = get_token_string();
-                return sax->parse_error(chars_read, last_token, parse_error::create(112, chars_read, exception_message(input_format_t::ubjson, "expected '#' after type information; last byte: 0x" + last_token, "size"), BasicJsonType()));
+                return sax->parse_error(chars_read, last_token, parse_error::create(112, chars_read, exception_message(input_format_t::ubjson, "expected '#' after type information; last byte: 0x" + last_token, "list_size"), BasicJsonType()));
             }
 
             return get_ubjson_size_value(result.first);
@@ -10408,7 +10408,7 @@ class binary_reader
 
     bool get_ubjson_high_precision_number()
     {
-        // get size of following number string
+        // get list_size of following number string
         std::size_t size{};
         auto res = get_ubjson_size_value(size);
         if (JSON_HEDLEY_UNLIKELY(!res))
@@ -13536,7 +13536,7 @@ class binary_writer
 
             case value_t::array:
             {
-                // step 1: write control byte and the array size
+                // step 1: write control byte and the array list_size
                 const auto N = j.m_value.array->size();
                 if (N <= 0x17)
                 {
@@ -13599,7 +13599,7 @@ class binary_writer
                     }
                 }
 
-                // step 1: write control byte and the binary array size
+                // step 1: write control byte and the binary array list_size
                 const auto N = j.m_value.binary->size();
                 if (N <= 0x17)
                 {
@@ -13638,7 +13638,7 @@ class binary_writer
 
             case value_t::object:
             {
-                // step 1: write control byte and the object size
+                // step 1: write control byte and the object list_size
                 const auto N = j.m_value.object->size();
                 if (N <= 0x17)
                 {
@@ -13856,7 +13856,7 @@ class binary_writer
 
             case value_t::array:
             {
-                // step 1: write control byte and the array size
+                // step 1: write control byte and the array list_size
                 const auto N = j.m_value.array->size();
                 if (N <= 15)
                 {
@@ -13969,7 +13969,7 @@ class binary_writer
 
             case value_t::object:
             {
-                // step 1: write control byte and the object size
+                // step 1: write control byte and the object list_size
                 const auto N = j.m_value.object->size();
                 if (N <= 15)
                 {
@@ -14215,8 +14215,8 @@ class binary_writer
     //////////
 
     /*!
-    @return The size of a BSON document entry header, including the id marker
-            and the entry name size (and its null-terminator).
+    @return The list_size of a BSON document entry header, including the id marker
+            and the entry name list_size (and its null-terminator).
     */
     static std::size_t calc_bson_entry_header_size(const string_t& name, const BasicJsonType& j)
     {
@@ -14263,7 +14263,7 @@ class binary_writer
     }
 
     /*!
-    @return The size of the BSON-encoded string in @a value
+    @return The list_size of the BSON-encoded string in @a value
     */
     static std::size_t calc_bson_string_size(const string_t& value)
     {
@@ -14293,7 +14293,7 @@ class binary_writer
     }
 
     /*!
-    @return The size of the BSON-encoded integer @a value
+    @return The list_size of the BSON-encoded integer @a value
     */
     static std::size_t calc_bson_integer_size(const std::int64_t value)
     {
@@ -14321,7 +14321,7 @@ class binary_writer
     }
 
     /*!
-    @return The size of the BSON-encoded unsigned integer in @a j
+    @return The list_size of the BSON-encoded unsigned integer in @a j
     */
     static constexpr std::size_t calc_bson_unsigned_size(const std::uint64_t value) noexcept
     {
@@ -14363,7 +14363,7 @@ class binary_writer
     }
 
     /*!
-    @return The size of the BSON-encoded array @a value
+    @return The list_size of the BSON-encoded array @a value
     */
     static std::size_t calc_bson_array_size(const typename BasicJsonType::array_t& value)
     {
@@ -14378,7 +14378,7 @@ class binary_writer
     }
 
     /*!
-    @return The size of the BSON-encoded binary array @a value
+    @return The list_size of the BSON-encoded binary array @a value
     */
     static std::size_t calc_bson_binary_size(const typename BasicJsonType::binary_t& value)
     {
@@ -14419,8 +14419,8 @@ class binary_writer
     }
 
     /*!
-    @brief Calculates the size necessary to serialize the JSON value @a j with its @a name
-    @return The calculated size for the BSON document entry for @a j with the given @a name.
+    @brief Calculates the list_size necessary to serialize the JSON value @a j with its @a name
+    @return The calculated list_size for the BSON document entry for @a j with the given @a name.
     */
     static std::size_t calc_bson_element_size(const string_t& name,
             const BasicJsonType& j)
@@ -14512,7 +14512,7 @@ class binary_writer
     }
 
     /*!
-    @brief Calculates the size of the BSON serialization of the given
+    @brief Calculates the list_size of the BSON serialization of the given
            JSON-object @a j.
     @param[in] value  JSON value to serialize
     @pre       value.type() == value_t::object
@@ -14885,7 +14885,7 @@ class binary_writer
                enable_if_t < std::is_signed<C>::value && std::is_unsigned<char>::value > * = nullptr >
     static CharType to_char_type(std::uint8_t x) noexcept
     {
-        static_assert(sizeof(std::uint8_t) == sizeof(CharType), "size of CharType must be equal to std::uint8_t");
+        static_assert(sizeof(std::uint8_t) == sizeof(CharType), "list_size of CharType must be equal to std::uint8_t");
         static_assert(std::is_trivial<CharType>::value, "CharType must be trivial");
         CharType result;
         std::memcpy(&result, &x, sizeof(x));
@@ -14982,7 +14982,7 @@ namespace dtoa_impl
 template<typename Target, typename Source>
 Target reinterpret_bits(const Source source)
 {
-    static_assert(sizeof(Target) == sizeof(Source), "size mismatch");
+    static_assert(sizeof(Target) == sizeof(Source), "list_size mismatch");
 
     Target target;
     std::memcpy(&target, &source, sizeof(Source));
@@ -15207,7 +15207,7 @@ boundaries compute_boundaries(FloatType value)
 //
 //      2^(q - 2 + alpha) <= c * w < 2^(q + gamma)
 //
-// The choice of (alpha,gamma) determines the size of the table and the form of
+// The choice of (alpha,gamma) determines the list_size of the table and the form of
 // the digit generation procedure. Using (alpha,gamma)=(-60,-32) works out well
 // in practice:
 //
@@ -17583,7 +17583,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     null      | null            | *no value is stored*
 
     @note Variable-length types (objects, arrays, and strings) are stored as
-    pointers. The size of the union should not exceed 64 bits if the default
+    pointers. The list_size of the union should not exceed 64 bits if the default
     value types are used.
 
     @since version 1.0.0
@@ -19020,7 +19020,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     to the JSON value type (e.g., the JSON value is of type boolean, but a
     string is requested); see example below
 
-    @complexity Linear in the size of the JSON value.
+    @complexity Linear in the list_size of the JSON value.
 
     @liveexample{The example below shows several conversions from JSON values
     to other types. There a few things to note: (1) Floating-point numbers can
@@ -19196,7 +19196,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             if (idx >= m_value.array->size())
             {
 #if JSON_DIAGNOSTICS
-                // remember array size & capacity before resizing
+                // remember array list_size & capacity before resizing
                 const auto old_size = m_value.array->size();
                 const auto old_capacity = m_value.array->capacity();
 #endif
@@ -19838,7 +19838,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     }
 
     /// @brief returns the number of elements
-    /// @sa https://json.nlohmann.me/api/basic_json/size/
+    /// @sa https://json.nlohmann.me/api/basic_json/list_size/
     size_type size() const noexcept
     {
         switch (m_type)
@@ -19851,13 +19851,13 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
             case value_t::array:
             {
-                // delegate call to array_t::size()
+                // delegate call to array_t::list_size()
                 return m_value.array->size();
             }
 
             case value_t::object:
             {
-                // delegate call to object_t::size()
+                // delegate call to object_t::list_size()
                 return m_value.object->size();
             }
 
@@ -19870,7 +19870,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::discarded:
             default:
             {
-                // all other types have size 1
+                // all other types have list_size 1
                 return 1;
             }
         }
@@ -19904,7 +19904,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::discarded:
             default:
             {
-                // all other types have max_size() == size()
+                // all other types have max_size() == list_size()
                 return size();
             }
         }

@@ -1,7 +1,8 @@
 #include <iostream>
+#include <algorithm>
 #include "engine.h"
 #include "crpgdata.h"
-#include "doublelist.h"
+#include "bilist.h"
 
 int main() {
     system("chcp 65001"); //Отображение кирилицы
@@ -17,10 +18,14 @@ int main() {
     std::cout << name1 << " ";
     std::cout << ageS << std::endl << std::endl;
 
-    doublelist<int> list;
-    list.push_back(0);
-    list.push_back(0);
-    list.compare();
+    bilist<int> list;
+    list.push_back(2);
+    list.push_back(3);
+    list.push_back(9);
+    list.push_back(1);
+    list.pop_front();
+    list.pop_front();
+    list.push_back(3);
     list.write_list();
     list.clear();
     list.write_list();
@@ -32,12 +37,45 @@ int main() {
     list.pop_front();
     list.pop_front();
     list.pop_front();
+    reverse(list.begin(), list.end());
+    list.push_back(1);
+    list.push_back(2);
+    list.push_back(3);
+    list.push_back(4);
+    list.push_back(5);
+    auto t = list.end();
+    t--;
+    t--;
+    t--;
+    t--;
+    t--;
+    t--;
+    t--;
+    t--;
+    cout << endl << *t << endl;
+
+    list.push_back(2);
+    reverse(list.begin(), list.end());
+    list.push_back(3);
+    list.push_back(9);
+    list.push_back(1);
+    cout << endl;
+    for (int & l : list)
+    {
+        cout << l << " elem" << endl;
+    }
+
+    //std::sort(list.begin(), list.end());
+
+    cout << endl;
+
     list.pop_front();
-    list.pop_front();
+    cout << endl;
+    cout << endl;
     list.write_list();
     cout << endl;
 
-    cout<< list.get_size() << endl;
+    cout<< list.size() << endl;
     cout<<endl;
 
     //cout << list[5] << endl;
