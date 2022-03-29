@@ -26,12 +26,58 @@ private:
     node* tail;
 
 public:
+    template <bool isConst>
+    class bilist_iterator
+    {
+        using node_pointer = std::conditional<isConst, const node*, node*>;
+        node_pointer ptr;
+
+    public:
+        explicit bilist_iterator(node_pointer p):ptr(p) { }
+
+        using difference_type = std::ptrdiff_t;
+        using value_type = T;
+        using pointer = std::conditional<isConst, const T*, T*>;
+        using reference = std::conditional<isConst, const T&, T&>;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        reference operator*() const { return ptr->value; }
+        auto& operator++() {
+            if (ptr == nullptr || ptr->right->right == nullptr) return *this;
+            ptr = ptr->right; return *this;
+        }
+
+        auto operator++(int)
+        {
+            if (ptr == nullptr || ptr->right->right == nullptr) return *this;
+            auto result = *this; ++*this; return result;
+        }
+
+        auto& operator--() {
+            if (ptr == nullptr || ptr->left== nullptr) return *this;
+            ptr = ptr->left; return *this;
+        }
+
+        auto operator--(int)
+        {
+            if (ptr == nullptr || ptr->left == nullptr) return *this;
+            auto result = *this; --*this; return result;
+        }
+
+        template<bool R>
+        bool operator==(const bilist_iterator<R>& it) const { return ptr == it.ptr; }
+
+        template<bool R>
+        bool operator!=(const bilist_iterator<R>& it) const { return ptr != it.ptr; }
+
+        operator bilist_iterator<true>() const { return bilist_iterator<true>(ptr); }
+    };
+
     class const_iterator;
 
     class iterator{
         using node_pointer = node*;
         node_pointer ptr;
-        node_pointer end_ptr;
     public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
@@ -40,14 +86,12 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
 
         explicit iterator(node_pointer p):ptr(p) { }
-        explicit iterator(node_pointer p, node_pointer ep):ptr(p), end_ptr(ep) { }
 
         reference operator*() const { return ptr->value; }
         iterator& operator++() { ptr = ptr->right; return *this; }
         iterator operator++(int) { iterator result = *this; ++*this; return result; }
-        iterator& operator--() { if (ptr == nullptr) ptr=end_ptr; else ptr = ptr->left; return *this; }
+        iterator& operator--() { ptr = ptr->left; return *this; }
         iterator operator--(int) { iterator result = *this; --*this; return result; }
-
 
         bool operator==(const iterator& c_iter) const { return ptr == c_iter.ptr; }
         bool operator!=(const iterator& c_iter) const { return ptr != c_iter.ptr; }
@@ -55,37 +99,13 @@ public:
         bool operator==(const const_iterator& c_iter) const { return ptr == c_iter.ptr; }
         bool operator!=(const const_iterator& c_iter) const { return ptr != c_iter.ptr; }
 
-        iterator& operator+(size_t offset)
-        {
-            while (offset>0) { offset--;++*this; }
-            return *this;
-        }
-
-        iterator& operator-(size_t offset)
-        {
-            while (offset>0) { offset--; --*this; }
-            return *this;
-        }
-
-        void swap(iterator it)
-        {
-            auto& temp = it.ptr;
-            it.ptr = ptr;
-            ptr = temp;
-        }
-
-        operator const_iterator() const { return const_iterator(ptr, end_ptr); } //Implicit transformation
+        operator const_iterator() const { return const_iterator(ptr); } //Implicit transformation
     };
-
-    void swap(iterator& it1, iterator& it2)
-    {
-        it1.swap(it2);
-    }
 
     class const_iterator{
         using node_pointer = const node*;
         node_pointer ptr;
-        node_pointer end_ptr;
+
     public:
         using difference_type = std::ptrdiff_t;
         using value_type = T;
@@ -94,25 +114,19 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
 
         explicit const_iterator(node_pointer p):ptr(p) { }
-        explicit const_iterator(node_pointer p, node_pointer ep):ptr(p), end_ptr(ep) { }
 
         reference operator*() const { return ptr->value; }
-        const_iterator& operator++() { ptr = ptr->right; return *this; }
-        const_iterator operator++(int) { const_iterator result = *this; ++*this; return result; }
-        const_iterator& operator--() { if (ptr == nullptr) ptr = end_ptr; else ptr = ptr->left; return *this; }
+        const_iterator& operator++() {
+            if (ptr == nullptr || ptr->right->right == nullptr) return *this; //If node is not exist, or next node is fictive
+            ptr = ptr->right; return *this;
+        }
+        const_iterator operator++(int) {
+            if (ptr == nullptr || ptr->right->right == nullptr) return *this; //If node is not exist, or next node is fictive
+            const_iterator result = *this;
+            ++*this; return result;
+        }
+        const_iterator& operator--() { ptr = ptr->left; return *this; }
         const_iterator operator--(int) { const_iterator result = *this; --*this; return result; }
-
-        const_iterator& operator+(size_t offset)
-        {
-            while (offset>0) { offset--;++*this; }
-            return *this;
-        }
-
-        const_iterator& operator-(size_t offset)
-        {
-            while (offset>0) { offset--; --*this; }
-            return *this;
-        }
 
         bool operator==(const const_iterator& c_iter) const { return this->ptr == c_iter.ptr; }
         bool operator!=(const const_iterator& c_iter) const { return this->ptr != c_iter.ptr; }
@@ -120,13 +134,16 @@ public:
 
     bilist(): list_size(0), head(nullptr), tail(nullptr) { }
     ~bilist(){ clear(); }
+
     void push_back(T value);
     void pop_front();
     void clear();
-    iterator begin() { return iterator(head, tail); }
-    iterator end() { return iterator(nullptr, tail); }
-    const_iterator begin() const { return const_iterator(head, tail); }
-    const_iterator end() const { return const_iterator(nullptr, tail); }
+
+    iterator begin() { return iterator(head); }
+    iterator end() { return iterator(tail== nullptr ? nullptr : tail->right); }
+    const_iterator cbegin() const { return const_iterator(head); }
+    const_iterator cend() const { return const_iterator(tail== nullptr ? nullptr : tail->right); }
+
     size_t size() const { return list_size; }
 
     T& operator[](size_t index);
@@ -147,11 +164,17 @@ void bilist<T>::push_back(T value)
 {
     if (head == nullptr) {
         head = tail = new node(value);
+        tail->right = new node(); //Fictive element
+        tail->right->left = tail;
     }
     else {
+        node* temp = tail->right;
         tail->right = new node(value);
         tail->right->left = tail;
         tail = tail->right;
+
+        tail->right = temp; //Move fictive element
+        tail->right->left = tail;
     }
     list_size++;
 }
@@ -161,6 +184,7 @@ void bilist<T>::pop_front() {
     if (head == nullptr) return;
     if (list_size == 1)
     {
+        delete tail->right;
         delete head;
         head = tail = nullptr;
     }

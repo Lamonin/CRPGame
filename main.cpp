@@ -18,7 +18,14 @@ int main() {
     std::cout << name1 << " ";
     std::cout << ageS << std::endl << std::endl;
 
+    vector<int> v;
+    auto it = v.begin();
+    --it;
+
+/*
     bilist<int> list;
+    list.begin()--;
+    list.end()++;
     list.push_back(2);
     list.push_back(3);
     list.push_back(9);
@@ -37,22 +44,17 @@ int main() {
     list.pop_front();
     list.pop_front();
     list.pop_front();
+    cout << endl << "HULAHOP  " << list.size() << endl;
     reverse(list.begin(), list.end());
     list.push_back(1);
     list.push_back(2);
     list.push_back(3);
     list.push_back(4);
     list.push_back(5);
-    auto t = list.end();
-    t--;
-    t--;
-    t--;
-    t--;
-    t--;
-    t--;
-    t--;
-    t--;
-    cout << endl << *t << endl;
+    list.write_list();
+    auto t = list.begin();
+    advance(t, 3);
+    cout << endl << "GGG  " << *t << endl;
 
     list.push_back(2);
     reverse(list.begin(), list.end());
@@ -76,7 +78,7 @@ int main() {
     cout << endl;
 
     cout<< list.size() << endl;
-    cout<<endl;
+    cout<<endl;*/
 
     //cout << list[5] << endl;
 
