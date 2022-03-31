@@ -7,81 +7,60 @@
 int main() {
     system("chcp 65001"); //Отображение кирилицы
     system("cls");
-    Data::DataHandler d;
-    d.OpenFile("data/user_data.json");
 
-    std::string name1;
-    d.GetValue("/name", name1);
-    std::string ageS;
-    d.GetValue("/goblin/name", ageS);
+    //INITIALIZER_LIST's
+    bilist<int> list = {0,0,1,2};
+    list.cout_list();
+    list.push_back({3,4,5,6,7});
+    list.cout_list();
 
-    std::cout << name1 << " ";
-    std::cout << ageS << std::endl << std::endl;
-
-    vector<int> v;
-    auto it = v.begin();
-    --it;
-
-/*
-    bilist<int> list;
-    list.begin()--;
-    list.end()++;
-    list.push_back(2);
-    list.push_back(3);
+    //PUSH_BACK
+    list.push_back(8);
     list.push_back(9);
-    list.push_back(1);
+    list.push_back(0);
+    list.push_back(0);
+
+    list.cout_list();
+
+    //POP_FRONT
     list.pop_front();
     list.pop_front();
-    list.push_back(3);
-    list.write_list();
+
+    list.cout_list();
+
+    //POP_BACK
+    list.pop_back();
+    list.pop_back();
+
+    list.cout_list();
+
+    //ITERATOR_MAGIC
+    cout << "\nREVERSE: ";
+    std::reverse(list.begin(), list.end());
+    for (auto l : list)
+        cout << l << " ";
+
+    cout << "\nREVERSE AGAIN: ";
+    std::reverse(list.begin(), list.end());
+    for (auto it = list.begin(); it != list.end(); it++)
+        cout << *it << " ";
+
+    //ACCESS BY INDEX
+    cout << endl;
+    cout << list[0] << endl;
+    cout << list[list.size()-1] << endl;
+
+    //REMOVE BY INDEX
+    cout << endl;
+    list.removeAt(3);
+    list.removeAt(4);
+    list.removeAt(list.size()-1);
+    list.cout_list();
+
+    //CLEAR
     list.clear();
-    list.write_list();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    list.pop_front();
-    cout << endl << "HULAHOP  " << list.size() << endl;
-    reverse(list.begin(), list.end());
-    list.push_back(1);
-    list.push_back(2);
-    list.push_back(3);
-    list.push_back(4);
-    list.push_back(5);
-    list.write_list();
-    auto t = list.begin();
-    advance(t, 3);
-    cout << endl << "GGG  " << *t << endl;
+    cout << "\nCLEAR LIST";
+    list.cout_list();
 
-    list.push_back(2);
-    reverse(list.begin(), list.end());
-    list.push_back(3);
-    list.push_back(9);
-    list.push_back(1);
-    cout << endl;
-    for (int & l : list)
-    {
-        cout << l << " elem" << endl;
-    }
-
-    //std::sort(list.begin(), list.end());
-
-    cout << endl;
-
-    list.pop_front();
-    cout << endl;
-    cout << endl;
-    list.write_list();
-    cout << endl;
-
-    cout<< list.size() << endl;
-    cout<<endl;*/
-
-    //cout << list[5] << endl;
-
-//    char h; std::cin>>h;
     return 0;
 }
