@@ -38,9 +38,9 @@ private:
         return current;
     }
 
-    size_t list_size;
     node* head;
     node* tail;
+    size_t list_size;
 
 public:
     template <bool isConst>
@@ -90,8 +90,8 @@ public:
         operator bilist_iterator<true>() const { return bilist_iterator<true>(ptr); }
     };
 
-    using const_iterator = bilist_iterator<true>;
     using iterator = bilist_iterator<false>;
+    using const_iterator = bilist_iterator<true>;
 
     bilist(): list_size(0), head(nullptr), tail(nullptr) { }
     bilist(initializer_list<T> init_list):list_size(0), head(0), tail(0) { push_back(init_list); }
@@ -193,24 +193,6 @@ void bilist<T>::clear() { while(list_size) pop_front(); }
 template<typename T>
 T& bilist<T>::operator[](const size_t index) {
     assert(!(index < 0 || index >= list_size) && "Index out of bounds!");
-
-    /*node* current = head;
-    size_t counter = 0;
-    if (index <= list_size / 2){
-        do {
-            if (counter++ == index) break;
-            current = current->right;
-        } while (current != tail);
-    }
-    else {
-        current = tail;
-        counter = list_size;
-        do {
-            if (--counter == index) break;
-            current = current->left;
-        } while (current != head);
-    }*/
-
     return find_by_index(index)->value;
 }
 
