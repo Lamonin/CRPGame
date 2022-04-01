@@ -43,11 +43,11 @@ private:
     size_t list_size;
 
 public:
-    template <bool isConst>
+    template <bool Const>
     class bilist_iterator
     {
-        friend class bilist_iterator<!isConst>;
-        using node_pointer = std::conditional_t<isConst, const node*, node*>;
+        friend class bilist_iterator<!Const>;
+        using node_pointer = std::conditional_t<Const, const node*, node*>;
         node_pointer ptr;
 
     public:
@@ -55,8 +55,8 @@ public:
 
         using difference_type = std::ptrdiff_t;
         using value_type = T;
-        using pointer = std::conditional_t<isConst, const T*, T*>;
-        using reference = std::conditional_t<isConst, const T&, T&>;
+        using pointer = std::conditional_t<Const, const T*, T*>;
+        using reference = std::conditional_t<Const, const T&, T&>;
         using iterator_category = std::bidirectional_iterator_tag;
 
         reference operator*() const { return ptr->value; }
