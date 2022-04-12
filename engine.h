@@ -64,7 +64,13 @@ namespace crpg
 
     public:
         Hero() = default;
-        Hero(Hero&& rhs) noexcept { std::cout << "CPP HELL"; }
+        Hero(Hero&& rhs) noexcept
+        {
+            race = rhs.race;
+            strength = rhs.strength;
+            agility = rhs.agility;
+            intelligence = rhs.intelligence;
+        }
 
         void setRace(Race* _race)
         {
