@@ -24,6 +24,34 @@ void Hero::setHeroType(HeroType *heroType) {
     Hero::heroType = heroType;
 }
 
+Weapon *Hero::getWeapon() const {
+    return weapon;
+}
+
+void Hero::setWeapon(Weapon *weapon) {
+    Hero::weapon = weapon;
+}
+
+Armor *Hero::getArmor() const {
+    return armor;
+}
+
+void Hero::setArmor(Armor *armor) {
+    Hero::armor = armor;
+}
+
+std::string Hero::getInfo() {
+    std::string info;
+
+    info += name + " ";
+    info += "[" + (heroType != nullptr ? heroType->getName():"КЛАСС") + "] ";
+    info += "[" + (race != nullptr ? race->getName():"РАСА") + "]\n";
+    info += "Оружие: " + weapon->getName() + "\n";
+    info += "Броня: " + armor->getName() + "\n";
+
+    return info;
+}
+
 std::string RandomProperty::generateName(bool is_female_gender) {
     if (is_female_gender)
         return female_names[random(0, 4)];

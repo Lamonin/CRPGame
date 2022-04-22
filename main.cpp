@@ -1,7 +1,9 @@
+
 #include <iostream>
 #include "engine.h"
 #include "game/heroes.h"
 #include "crpgdata.h"
+#include "game/character_editor.h"
 #include "bilist.h"
 
 using namespace crpg;
@@ -9,16 +11,13 @@ using namespace crpg;
 int main() {
     system("chcp 65001"); //Отображение кирилицы
 
-    RandomHeroBuilder rHeroBuilder;
+    std::cout << "Добро пожаловать на CRPG ARENA!\n\n";
+    std::cout << "Создайте себе персонажа:";
 
-    Hero* hero1 = rHeroBuilder.build();
-    cout << hero1->getInfo();
+    HeroEditor heroEditor{};
+    auto h = heroEditor.build();
 
-    Hero* hero2 = rHeroBuilder.build();
-    cout << hero2->getInfo();
-
-    Hero* hero3 = rHeroBuilder.build();
-    cout << hero3->getInfo();
+    cout << endl << h->getInfo() << endl;
 
     return 0;
 }

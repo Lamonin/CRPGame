@@ -5,6 +5,8 @@
 #include <string>
 #include "races.h"
 #include "hero_types.h"
+#include "weapons.h"
+#include "armors.h"
 
 class Hero {
 private:
@@ -15,11 +17,14 @@ private:
 
     Race *race{};
     HeroType *heroType{};
-    //Weapon* weapon;
-    //Armor* armor;
+    Weapon* weapon{};
+    Armor* armor{};
 
 public:
-    Hero() = default;
+    Hero()
+    {
+        name = "DEFAULT";
+    }
 
     ~Hero() {
         delete race;
@@ -35,16 +40,13 @@ public:
     [[nodiscard]] HeroType *getHeroType() const;
     void setHeroType(HeroType *heroType);
 
-    std::string getInfo() {
-        std::string info;
+    [[nodiscard]] Weapon *getWeapon() const;
+    void setWeapon(Weapon *weapon);
 
-        info += name + " ";
-        info += "[" + heroType->getName() + "] ";
-        info += "[" + race->getName() + "]\n";
+    [[nodiscard]] Armor *getArmor() const;
+    void setArmor(Armor *armor);
 
-        return info;
-    }
-
+    std::string getInfo();
 };
 
 class HeroBuilder {
@@ -58,6 +60,8 @@ public:
     void setRace(Race *race) { hero->setRace(race); }
     void setHeroType(HeroType *heroType) { hero->setHeroType(heroType); }
     void setName(const std::string &name) { hero->setName(name); }
+    void setWeapon(Weapon *weapon) { hero->setWeapon(weapon); }
+    void setArmor(Armor *armor) { hero->setArmor(armor); }
 
     void reset() {
         delete hero;
