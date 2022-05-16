@@ -12,67 +12,44 @@ class HeroEditor {
 private:
     bool gender;
 
-    std::string ChooseName() const
-    {
-        std::string input;
-        std::cout << "Введите имя: ";
-        input = SafeConsoleInput<std::string>("","", [](std::string &t){return t.size() > 3;});
-        return input;
-    }
+    [[nodiscard]] std::string ChooseName() const;
 
-    bool ChooseGender()
-    {
-        std::cout << "\n\n1] Мужчина\n";
-        std::cout << "2] Женщина\n";
-        std::cout << "Пол персонажа: ";
-        int gender_num = SafeConsoleInput<int>("", "", [](int &t) { return t>0 && t<3; });
-        return --gender_num;
-    }
+    [[nodiscard]] bool ChooseGender();
 
     template<typename T>
-    T* ChooseType(std::vector<T*> fromWhereChoose, const std::string& chooseMessage, int from, int to) const
+    T* ChooseType(std::vector<T*> whereChoose, const std::string& message, int index_from, int index_to) const
     {
         std::cout << std::endl;
-        for (int i = 0; i < fromWhereChoose.size(); ++i)
-        {
-            std::cout << i+1 << "] " << fromWhereChoose[i]->getName() << std::endl;
-        }
-        std::cout << chooseMessage;
-        int num = SafeConsoleInput<int>("", "", [&from, &to](int &t) { return t > from && t < to; });
+        for (int i = 0; i < whereChoose.size(); ++i)
+            std::cout << i+1 << "] " << whereChoose[i]->getInfo() << std::endl;
 
-        T* temp = fromWhereChoose[--num];
-        fromWhereChoose[num] = nullptr;
-        for (auto r : fromWhereChoose) delete r;
+        std::cout << message;
+
+        int num = SafeConsoleInput<int>("", "", [&index_from, &index_to](int &t)
+        {
+            return t > index_from && t < index_to;
+        });
+
+        T* temp = whereChoose[--num];
+        whereChoose[num] = nullptr;
+        for (auto r : whereChoose) delete r;
 
         return temp;
     }
 
-    Race* ChooseRace() const;
+    [[nodiscard]] Race* ChooseRace() const;
 
-    HeroType* ChooseHeroType() const;
+    [[nodiscard]] HeroType* ChooseHeroType() const;
 
-    Weapon* ChooseWeapon() const;
+    [[nodiscard]] Weapon* ChooseWeapon() const;
 
-    Armor* ChooseArmor() const;
+    [[nodiscard]] Armor* ChooseArmor() const;
 
 public:
     HeroEditor() = default;
     ~HeroEditor() = default;
 
-    Hero *build()
-    {
-        HeroBuilder builder;
-
-        builder.reset();
-        gender = ChooseGender();
-        builder.setName(ChooseName());
-        builder.setRace(ChooseRace());
-        builder.setHeroType(ChooseHeroType());
-        builder.setWeapon(ChooseWeapon());
-        builder.setArmor(ChooseArmor());
-
-        return builder.getHero();
-    }
+    Hero *build();
 };
 
 #endif //CRPGAME_CHARACTER_EDITOR_H

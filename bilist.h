@@ -2,6 +2,7 @@
 #define CRPGAME_BILIST_H
 
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 

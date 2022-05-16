@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "races.h"
 #include "hero_types.h"
 #include "weapons.h"
@@ -13,7 +14,9 @@ private:
     std::string name{};
     int strength{};
     int agility{};
-    int intelligence{};
+    int intellect{};
+    int hit_point{};
+    int max_hit_point{};
 
     Race *race{};
     HeroType *heroType{};
@@ -31,8 +34,11 @@ public:
         delete heroType;
     }
 
+    //Reset HP to full
+    void reset();
+
     [[nodiscard]] const std::string &getName() const;
-    void setName(const std::string &name);
+    void setName(std::string name);
 
     [[nodiscard]] Race *getRace() const;
     void setRace(Race *race);
@@ -46,7 +52,18 @@ public:
     [[nodiscard]] Armor *getArmor() const;
     void setArmor(Armor *armor);
 
-    std::string getInfo();
+    [[nodiscard]] int getHitPoint() const;
+    void setHitPoint(int hitpoint);
+
+    [[nodiscard]] int getMaxHitPoint() const;
+
+    [[nodiscard]] int getStrength() const;
+
+    [[nodiscard]] int getAgility() const;
+
+    [[nodiscard]] int getIntellect() const;
+
+    std::string getInfo(bool lite_info = false);
 };
 
 class HeroBuilder {
@@ -69,6 +86,7 @@ public:
     }
 
     [[nodiscard]] Hero *getHero() {
+        hero->reset();
         Hero *temp = hero;
         hero = nullptr;
         return temp;
@@ -77,29 +95,31 @@ public:
 
 class RandomNumber {
 public:
-    RandomNumber() {
-        srand(time(nullptr));
-    }
+    RandomNumber() = default;
+    ~RandomNumber() = default;
 
-    int random(const int min, const int max) { return rand() % (max - min + 1) + min; }
+    static bool is_initialized;
+
+    static int random(const int min, const int max)
+    {
+        if (!is_initialized) {
+            srand(time(nullptr));
+            is_initialized = true;
+        }
+        return rand() % (max - min + 1) + min;
+    }
 };
 
 class RandomProperty {
-private:
-    RandomNumber rNumber;
-private:
-    std::string male_names[5] = {"Таран", "Долок", "Дарван", "Семил", "Исаак"};
-    std::string female_names[5] = {"Мари", "Элла", "Катерин", "Элеанор", "Сарра"};
-
 public:
     RandomProperty() = default;
     ~RandomProperty() = default;
 
-    std::string generateName(bool is_female_gender);
-    Race *generateRace();
-    HeroType *generateHeroType(bool is_female_gender);
-
-    int random(const int min, const int max) { return rNumber.random(min, max); }
+    static std::string randomName(bool is_female_gender);
+    static Race *randomRace();
+    static HeroType *randomHeroType();
+    static Weapon *randomWeapon();
+    static Armor *randomArmor();
 };
 
 class RandomHeroBuilder {

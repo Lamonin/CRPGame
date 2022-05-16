@@ -12,26 +12,26 @@ class HeroType {
         HeroType() = default;
         virtual ~HeroType() = default;
 
-        [[nodiscard]] const std::string &getName() const { return name; }
+        [[nodiscard]] const std::string &getInfo() const { return name; }
 
         virtual void ability() = 0;
     };
 
     class Warrior : public HeroType {
     public:
-        explicit Warrior(bool gender) : HeroType() { name = gender ? "Воительница" : "Воин"; }
+        explicit Warrior() : HeroType() { name = "WARRIOR"; }
         void ability() override;
     };
 
     class Archer : public HeroType {
     public:
-        explicit Archer(bool gender) : HeroType() { name = gender ? "Лучница" : "Лучник"; }
+        explicit Archer() : HeroType() { name = "ARCHER"; }
         void ability() override;
     };
 
     class Wizard : public HeroType {
     public:
-        explicit Wizard(bool gender) : HeroType() { name = gender ? "Волшебница" : "Волшебник"; }
+        explicit Wizard() : HeroType() { name = "WIZARD"; }
         void ability() override;
     };
 

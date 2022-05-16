@@ -5,18 +5,26 @@
 #include <string>
 #include <utility>
 
+
+enum ArmorTypeEnum { Heavy, Medium, Light };
+
 class Armor
 {
 private:
     std::string name;
+    ArmorTypeEnum armor_type {};
 
 public:
     Armor() = default;
     explicit Armor(std::string name):name(std::move(name)) { }
+    Armor(std::string name, ArmorTypeEnum armor_type):Armor(std::move(name))
+    {
+        this->armor_type = armor_type;
+    }
     ~Armor() = default;
 
     [[nodiscard]]const std::string &getName() const;
-    void setName(const std::string &name);
+    [[nodiscard]] std::string getInfo();
 };
 
 #endif //CRPGAME_ARMORS_H

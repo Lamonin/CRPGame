@@ -4,6 +4,20 @@ const std::string &Armor::getName() const {
     return name;
 }
 
-void Armor::setName(const std::string &name) {
-    Armor::name = name;
+std::string Armor::getInfo() {
+    std::string info = name + " [ARMOUR] ";
+
+    switch (armor_type) {
+        case Heavy:
+            info += "[HEAVY]";
+            break;
+        case Medium:
+            info += "[MEDIUM]";
+            break;
+        case Light:
+            info += "[LIGHT]";
+            break;
+    }
+
+    return info;
 }

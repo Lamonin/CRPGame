@@ -1,4 +1,3 @@
-
 #ifndef CRPGAME_RACES_H
 #define CRPGAME_RACES_H
 
@@ -16,16 +15,13 @@ public:
     Race() = default;
     virtual ~Race() = default;
 
-    [[nodiscard]] const std::string &getName() const;
+    [[nodiscard]] const std::string &getInfo() const;
 
     [[nodiscard]] int getStrength() const;
-    void setStrength(int strength);
 
     [[nodiscard]] int getAgility() const;
-    void setAgility(int agility);
 
-    [[nodiscard]] int getIntelligence() const;
-    void setIntelligence(int intelligence);
+    [[nodiscard]] int getIntellect() const;
 
     virtual void ability() = 0;
 };
@@ -33,7 +29,7 @@ public:
 class Human : public Race {
 public:
     Human() : Race() {
-        name = "Человек";
+        name = "HUMAN";
         strength = 12;
         agility = 12;
         intelligence = 12;
@@ -45,7 +41,7 @@ public:
 class Orc : public Race {
 public:
     Orc() : Race() {
-        name = "Орк";
+        name = "ORC";
         strength = 14;
         agility = 12;
         intelligence = 10;
@@ -57,7 +53,7 @@ public:
 class Elf : public Race {
 public:
     Elf() : Race() {
-        name = "Эльф";
+        name = "ELF";
         strength = 10;
         agility = 12;
         intelligence = 14;
