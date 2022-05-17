@@ -3,11 +3,14 @@
 
 #include <iostream>
 #include <string>
+#include <conio.h>
+#include "bilist.h"
 #include "game/character_editor.h"
-
 
 namespace crpg
 {
+    void WaitUserReaction(const std::string& message = "");
+
     class BattleProcessor
     {
     public:
@@ -16,9 +19,9 @@ namespace crpg
 
         void Attack(Hero* who, Hero* target);
 
-        int GetPlayerTurn(Hero* player);
+        int GetPlayerTurn();
 
-        int GetEnemyTurn(Hero* enemy);
+        int GetEnemyTurn();
 
         void PerformBattleAction(Hero*who, Hero* target, int num);
     };
@@ -27,7 +30,6 @@ namespace crpg
     {
     private:
         static void BeginBattle(Hero* player, Hero* enemy);
-        static void EndBattle(Hero* player);
     public:
         static void Play();
     };

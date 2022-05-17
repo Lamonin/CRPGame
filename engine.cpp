@@ -1,49 +1,65 @@
 #include "engine.h"
-#include "bilist.h"
 
 void crpg::Game::Play() {
-    system("cls");
-    std::cout << "Welcome to CRPG ARENA!\n\n";
-    std::cout << "Create your own character:";
-
-    //User create a hero
-    HeroEditor heroEditor{};
-    Hero* player = heroEditor.build();
-    std::cout << std::endl << player->getInfo() << std::endl;
-
-    std::cout << std::endl << "\nYour goal is to win three battles!\n";
-
-    //Create all three enemies from the start
-    bilist<Hero*> enemys;
-
     RandomHeroBuilder enemy_builder;
-    enemys.push_back(enemy_builder.build());
-    enemys.push_back(enemy_builder.build());
-    enemys.push_back(enemy_builder.build());
+    HeroEditor hero_editor{};
+    Hero* player;
 
-    BeginBattle(player, enemys[0]);
-    if (player->getHitPoint()>0) {
-        BeginBattle(player, enemys[1]);
-    }
-    if (player->getHitPoint()>0) {
-        BeginBattle(player, enemys[2]);
+    bool is_still_played = true;
+    while(is_still_played)
+    {
+        system("cls");
+        std::cout << "Welcome to CRPG ARENA!\n\nCreate your own character:";
 
-        std::cout << "\n\nYOU BECAME ARENA CHAMPION!\n\n";
-        std::cout << "You have defeated these heroes:\n";
-        for (Hero* enemy : enemys)
+        //User create a hero
+        player = hero_editor.build();
+
+        system("cls");
+        std::cout << "[YOUR HERO]\n";
+        std::cout << std::endl << player->getInfo();
+        std::cout << std::endl << "[!!!]Your goal is to win three battles![!!!]\n";
+        WaitUserReaction("\nPress any key to continue!");
+
+        //Create all three enemies from the start
+        bilist<Hero*> enemys;
+        enemys.push_back(enemy_builder.build());
+        enemys.push_back(enemy_builder.build());
+        enemys.push_back(enemy_builder.build());
+
+        for (auto & enemy : enemys)
         {
-            std::cout << std::endl << enemy->getInfo(true);
+            BeginBattle(player, enemy);
+
+            if (player->getHitPoint()<0) break;
+
+            player->setHitPoint(player->getHitPoint()+20);
+            system("cls");
+            std::cout << "<<<YOU WON THE BATTLE!>>>\n";
+            WaitUserReaction("\nPress any key to continue!");
         }
 
-        char t; std::cin>>t;
+        enemys.clear();
+
+        if (player->getHitPoint()<0) {
+            std::cout << "Unfortunately - you lose!\n";
+        }
+        else {
+            is_still_played = false;
+            std::cout << "\n\n<<<YOU BECAME ARENA CHAMPION!>>>\n\n";
+        }
+        WaitUserReaction("\nPress any key to continue!");
     }
 }
 
 void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
     BattleProcessor battle;
 
-    bool is_player_turn = false;
+    system("cls");
+    std::cout << "[YOUR ENEMY]\n";
+    std::cout << std::endl << enemy->getInfo(true) << std::endl;
+    WaitUserReaction("\nPress any key to start battle!");
 
+    bool is_player_turn = false;
     if (player->getAgility()>enemy->getAgility())
     {
         is_player_turn = true;
@@ -51,38 +67,30 @@ void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
 
     while (player->getHitPoint()>0 && enemy->getHitPoint()>0) {
         if (is_player_turn) {
-            battle.PerformBattleAction(player, enemy, battle.GetPlayerTurn(player));
+            battle.PerformBattleAction(player, enemy, battle.GetPlayerTurn());
         } else {
-            battle.PerformBattleAction(enemy, player, battle.GetEnemyTurn(enemy));
+            system("cls");
+            std::cout << "[ENEMY TURN]\n\n";
+            int enemy_action = battle.GetEnemyTurn();
+            battle.PerformBattleAction(enemy, player, enemy_action);
+            if (enemy_action == 1)
+            {
+                std::cout << enemy->getName() << " attacks you!\n";
+            }
+            WaitUserReaction("\nPress any key to continue!");
         }
 
-        std::cout << std::endl << player->getInfo() << std::endl;
+        system("cls");
+        std::cout << "YOUR TURN\n";
+        std::cout << std::endl << player->getInfo();
         std::cout << std::endl << enemy->getInfo(true) << std::endl;
 
         is_player_turn = !is_player_turn;
     }
-
-    EndBattle(player);
 }
 
-void crpg::Game::EndBattle(Hero *player) {
-    if (player->getHitPoint()<0) //Player is lose!
-    {
-        std::cout << "Unfortunately - you lose!\n";
-        std::cout << "\nEnter any symbol and press [Enter] to continue!\n";
-        char t; std::cin>>t;
-        Play();
-    }
-    else
-    {
-        player->setHitPoint(player->getHitPoint()+20);
-        std::cout << "You won the battle!\n";
-    }
-}
-
-int crpg::BattleProcessor::GetPlayerTurn(Hero *player) {
-    std::cout << "YOUR TURN!\n";
-
+int crpg::BattleProcessor::GetPlayerTurn() {
+    std::cout << "Choose action:\n";
     std::cout << "1] Attack\n";
     std::cout << "2] Use weapon ability\n";
     std::cout << "3] Use race ability\n";
@@ -94,7 +102,7 @@ int crpg::BattleProcessor::GetPlayerTurn(Hero *player) {
     return num;
 }
 
-int crpg::BattleProcessor::GetEnemyTurn(Hero *enemy) {
+int crpg::BattleProcessor::GetEnemyTurn() {
     return RandomNumber::random(1,4);
 }
 
@@ -114,7 +122,12 @@ void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num)
             who->getRace()->ability();
             break;
         case 4: //USE POTION ACTION
-            std::cout << "Let's imagine that you have used a health potion!";
+            std::cout << "Let's imagine that you have used a health potion!\n";
             break;
     }
+}
+
+void crpg::WaitUserReaction(const string &message) {
+    std::cout << message;
+    getch();
 }
