@@ -77,7 +77,8 @@ void Hero::reset() {
     agility = race->getAgility();
     intellect = race->getIntellect();
 
-    hit_point = strength*10;
+    hit_point = strength*5;
+    if (race->getInfo() == "ORC") hit_point *= 2;
     max_hit_point = hit_point;
 }
 

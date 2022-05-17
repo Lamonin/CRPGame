@@ -16,31 +16,31 @@ std::string HeroEditor::ChooseName() const {
 }
 
 Race *HeroEditor::ChooseRace() const {
-    std::vector<Race*> avaiable_races = {new Human, new Orc, new Elf};
-    return ChooseType(avaiable_races, "Choose a race: ", 0, 4);
+    std::vector<Race*> available_races = {new Human, new Orc, new Elf};
+    return ChooseType(available_races, "Choose a race: ", 0, 4);
 }
 
 HeroType *HeroEditor::ChooseHeroType() const {
-    std::vector<HeroType*> avaiable_heroTypes = { new Warrior(), new Archer(), new Wizard() };
-    return ChooseType(avaiable_heroTypes, "Choose a class: ", 0, 4);
+    std::vector<HeroType*> available_heroTypes = { new Warrior(), new Archer(), new Wizard() };
+    return ChooseType(available_heroTypes, "Choose a class: ", 0, 4);
 }
 
 Weapon *HeroEditor::ChooseWeapon() const {
-    std::vector<Weapon*> avaiable_weapons= {
+    std::vector<Weapon*> available_weapons= {
             new Weapon("Sword", 10, WeaponTypeEnum::Melee, DamageTypeEnum::Physical),
             new Weapon("Bow", 7, WeaponTypeEnum::LongRange, DamageTypeEnum::Physical),
             new Weapon("Staff", 5, WeaponTypeEnum::Melee, DamageTypeEnum::Magical)
     };
-    return ChooseType(avaiable_weapons, "Choose a weapon: ", 0, 4);
+    return ChooseType(available_weapons, "Choose a weapon: ", 0, 4);
 }
 
 Armor *HeroEditor::ChooseArmor() const {
-    std::vector<Armor*> avaiable_armors = {
+    std::vector<Armor*> available_armors = {
             new Armor("Copper armour", ArmorTypeEnum::Heavy),
             new Armor("Leather armour", ArmorTypeEnum::Medium),
             new Armor("Cloth mantle", ArmorTypeEnum::Light)
     };
-    return ChooseType(avaiable_armors, "Choose an armour: ", 0, 4);
+    return ChooseType(available_armors, "Choose an armour: ", 0, 4);
 }
 
 Hero *HeroEditor::build() {
