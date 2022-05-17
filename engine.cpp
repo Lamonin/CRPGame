@@ -45,7 +45,8 @@ void crpg::Game::Play() {
         }
         else {
             is_still_played = false;
-            std::cout << "\n\n<<<YOU BECAME ARENA CHAMPION!>>>\n\n";
+            system("cls");
+            std::cout << "<<<YOU BECAME ARENA CHAMPION!>>>\n";
         }
         WaitUserReaction("\nPress any key to continue!");
     }
@@ -107,7 +108,28 @@ int crpg::BattleProcessor::GetEnemyTurn() {
 }
 
 void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
-    target->setHitPoint(target->getHitPoint() - who->getWeapon()->getDamage());
+    Weapon* who_weapon = who->getWeapon();
+    Armor* target_armor = target->getArmor();
+
+    int damage = who_weapon->getDamage();
+
+    //Reduce physical damage by armor
+    if (who_weapon->getDamageType() == DamageTypeEnum::Physical)
+    {
+        switch (target_armor->getArmorType()) {
+            case ArmorTypeEnum::Heavy:
+                damage = damage * 60 / 100;
+                break;
+            case ArmorTypeEnum::Medium:
+                damage = damage * 80 / 100;
+                break;
+            case ArmorTypeEnum::Light:
+                damage = damage * 90 / 100;
+                break;
+        }
+    }
+
+    target->setHitPoint(target->getHitPoint() - damage);
 }
 
 void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num) {

@@ -21,3 +21,7 @@ std::string Armor::getInfo() {
 
     return info;
 }
+
+ArmorTypeEnum Armor::getArmorType() const {
+    return armor_type;
+}

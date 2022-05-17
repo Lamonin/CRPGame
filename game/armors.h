@@ -23,7 +23,8 @@ public:
     }
     ~Armor() = default;
 
-    [[nodiscard]]const std::string &getName() const;
+    [[nodiscard]] ArmorTypeEnum getArmorType() const;
+    [[nodiscard]] const std::string &getName() const;
     [[nodiscard]] std::string getInfo();
 };
 
