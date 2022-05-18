@@ -29,7 +29,7 @@ public:
         name = "DEFAULT";
     }
 
-    ~Hero() {
+    virtual ~Hero() {
         delete race;
         delete heroType;
     }
@@ -72,7 +72,7 @@ private:
 
 public:
     HeroBuilder() : hero(nullptr) {}
-    ~HeroBuilder() { delete hero; }
+    virtual ~HeroBuilder() { delete hero; }
 
     void setRace(Race *race) { hero->setRace(race); }
     void setHeroType(HeroType *heroType) { hero->setHeroType(heroType); }
@@ -96,7 +96,7 @@ public:
 class RandomNumber {
 public:
     RandomNumber() = default;
-    ~RandomNumber() = default;
+    virtual ~RandomNumber() = default;
 
     static bool is_initialized;
 
@@ -113,7 +113,7 @@ public:
 class RandomProperty {
 public:
     RandomProperty() = default;
-    ~RandomProperty() = default;
+    virtual ~RandomProperty() = default;
 
     static std::string randomName(bool is_female_gender);
     static Race *randomRace();
@@ -129,7 +129,7 @@ private:
 
 public:
     RandomHeroBuilder() = default;
-    ~RandomHeroBuilder() = default;
+    virtual ~RandomHeroBuilder() = default;
     [[nodiscard]] Hero *build();
 };
 

@@ -15,8 +15,9 @@ namespace crpg
     {
     public:
         BattleProcessor()=default;
-        ~BattleProcessor()=default;
+        virtual ~BattleProcessor()=default;
 
+    public:
         void Attack(Hero* who, Hero* target);
 
         int GetPlayerTurn();

@@ -13,6 +13,7 @@ private:
     int potion_power;
 public:
     explicit HealthPotion(int potion_power = 0):potion_power(potion_power) { }
+    virtual ~HealthPotion() = default;
 
     template<is_have_hp T>
     void Use(T target)

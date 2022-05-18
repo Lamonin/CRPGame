@@ -21,7 +21,7 @@ public:
     {
         this->armor_type = armor_type;
     }
-    ~Armor() = default;
+    virtual ~Armor() = default;
 
     [[nodiscard]] ArmorTypeEnum getArmorType() const;
     [[nodiscard]] const std::string &getName() const;

@@ -18,15 +18,16 @@ private:
 
 public:
     Weapon() = default;
-    explicit Weapon(std::string name, int damage):name(std::move(name)), damage(damage) { }
+    explicit Weapon(std::string name, int damage): name(std::move(name)), damage(damage) { }
     Weapon(std::string name, int damage, WeaponTypeEnum weapon_type, DamageTypeEnum damage_type): Weapon(std::move(name), damage)
     {
         this->weapon_type = weapon_type;
         this->damage_type = damage_type;
     }
 
-    ~Weapon() = default;
+    virtual ~Weapon() = default;
 
+public:
     [[nodiscard]] const std::string &getName() const;
     void setName(const std::string &name);
 

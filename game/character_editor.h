@@ -47,7 +47,7 @@ private:
 
 public:
     HeroEditor() = default;
-    ~HeroEditor() = default;
+    virtual ~HeroEditor() = default;
 
     Hero *build();
 };

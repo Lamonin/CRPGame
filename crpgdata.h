@@ -18,7 +18,10 @@ namespace Data
     private:
         json file;
     public:
-        DataHandler();
+        DataHandler() = default;
+        virtual ~DataHandler() = default;
+
+    public:
         void OpenFile(const std::string& path);
 
         template <typename T>
