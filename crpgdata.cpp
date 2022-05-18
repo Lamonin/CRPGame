@@ -1,7 +1,5 @@
 #include "crpgdata.h"
 
-Data::DataHandler::DataHandler() = default;
-
 void Data::DataHandler::OpenFile(const std::string &path) {
     std::cout << std::filesystem::current_path().string() << std::endl;
     std::ifstream reader(std::filesystem::current_path().string()+"/"+path);
