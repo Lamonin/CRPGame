@@ -14,6 +14,11 @@ void crpg::Game::Play() {
         //User create a hero
         player = hero_editor.build();
 
+        for(int i = 0; i<RandomNumber::random(0,2); ++i)
+        {
+            player->addPotion(new HealthPotion(25));
+        }
+
         system("cls");
         std::cout << "[YOUR HERO]\n";
         std::cout << std::endl << player->getInfo();
@@ -104,7 +109,7 @@ int crpg::BattleProcessor::GetPlayerTurn() {
 }
 
 int crpg::BattleProcessor::GetEnemyTurn() {
-    return RandomNumber::random(1,4);
+    return RandomNumber::random(1,3);
 }
 
 void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
@@ -127,6 +132,14 @@ void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
                 damage = damage * 90 / 100;
                 break;
         }
+        //Increase physical type damage by strength
+        damage = damage * who->getStrength() * 10 / 100;
+    }
+
+    if (who_weapon->getDamageType() == DamageTypeEnum::Magical)
+    {
+        //Increase magical type damage by intellect
+        damage = damage * who->getIntellect() * 10 / 100;
     }
 
     target->setHitPoint(target->getHitPoint() - damage);
@@ -139,13 +152,13 @@ void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num)
             Attack(who, target);
             break;
         case 2: //USE WEAPON ABILITY ACTION
-            std:: cout << who->getWeapon()->ability() << std::endl;
+            std::cout << who->getWeapon()->ability() << std::endl;
             break;
         case 3: //USE RACE ABILITY ACTION
             std::cout << who->getRace()->ability() << std::endl;
             break;
         case 4: //USE POTION ACTION
-            std::cout << "Let's imagine that you have used a health potion!\n";
+            std::cout << target->usePotion();
             break;
     }
 }

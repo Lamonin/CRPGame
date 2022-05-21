@@ -51,9 +51,16 @@ std::string Hero::getInfo(bool lite_info) {
     if (!lite_info) {
         info += weapon->getInfo() + "\n";
         info += armor->getInfo() + "\n";
-        info += "Strength: " + std::to_string(strength) + "\n";
-        info += "Agility: " + std::to_string(agility) + "\n";
-        info += "Intellect: " + std::to_string(intellect) + "\n";
+        info += "Strength: " + std::to_string(getStrength()) + "\n";
+        info += "Agility: " + std::to_string(getAgility()) + "\n";
+        info += "Intellect: " + std::to_string(getIntellect()) + "\n\n";
+    }
+
+    if (potions.empty()) {
+        info += "You have no potions!\n";
+    }
+    else {
+        info += "You have " + std::to_string(potions.size()) + " healing potions!\n";
     }
 
     return info;
@@ -73,25 +80,38 @@ int Hero::getMaxHitPoint() const {
 }
 
 void Hero::reset() {
-    strength = race->getStrength();
-    agility = race->getAgility();
-    intellect = race->getIntellect();
-
-    hit_point = strength*5;
+    hit_point = getStrength()*5;
     if (race->getInfo() == "ORC") hit_point *= 2;
     max_hit_point = hit_point;
 }
 
 int Hero::getStrength() const {
+    int strength = race->getStrength();
     return strength;
 }
 
 int Hero::getAgility() const {
+    int agility = race->getAgility();
     return agility;
 }
 
 int Hero::getIntellect() const {
+    int intellect = race->getIntellect();
     return intellect;
+}
+
+std::string Hero::usePotion() {
+    if (potions.empty()) return "You have no potions!";
+
+    HealthPotion* potion = potions[potions.size()-1];
+    potions.pop_back();
+
+    potion->Use(*this);
+    std::string potion_msg = "You used a potion and recovered " + std::to_string(potion->getPotionPower()) + " hp.";
+
+    delete potion;
+
+    return potion_msg;
 }
 
 bool RandomNumber::is_initialized = false;

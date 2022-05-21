@@ -8,13 +8,11 @@
 #include "hero_types.h"
 #include "weapons.h"
 #include "armors.h"
+#include "items.h"
 
 class Hero {
 private:
     std::string name{};
-    int strength{};
-    int agility{};
-    int intellect{};
     int hit_point{};
     int max_hit_point{};
 
@@ -22,6 +20,8 @@ private:
     HeroType *heroType{};
     Weapon* weapon{};
     Armor* armor{};
+
+    std::vector<HealthPotion*> potions;
 
 public:
     Hero()
@@ -34,8 +34,23 @@ public:
         delete heroType;
     }
 
+public:
     //Reset HP to full
     void reset();
+
+    void battleTick()
+    {
+        race->ability_tick();
+    }
+
+    std::string usePotion();
+
+    void addPotion(HealthPotion* potion)
+    {
+        potions.push_back(potion);
+    }
+
+public:
 
     [[nodiscard]] const std::string &getName() const;
     void setName(std::string name);
@@ -54,11 +69,6 @@ public:
 
     [[nodiscard]] int getHitPoint() const;
     void setHitPoint(int hitpoint);
-
-    void battleTick()
-    {
-        race->ability_tick();
-    }
 
     [[nodiscard]] int getMaxHitPoint() const;
 
