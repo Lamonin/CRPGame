@@ -54,6 +54,8 @@ void crpg::Game::Play() {
 
 void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
     BattleProcessor battle;
+    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, *player));
+    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, *enemy));
 
     system("cls");
     std::cout << "[YOUR ENEMY]\n";
@@ -72,12 +74,8 @@ void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
         } else {
             system("cls");
             std::cout << "[ENEMY TURN]\n\n";
-            int enemy_action = battle.GetEnemyTurn();
-            battle.PerformBattleAction(enemy, player, enemy_action);
-            if (enemy_action == 1)
-            {
-                std::cout << enemy->getName() << " attacks you!\n";
-            }
+
+            battle.PerformBattleAction(enemy, player, battle.GetEnemyTurn());
             WaitUserReaction("\nPress any key to continue!");
         }
 
@@ -87,6 +85,8 @@ void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
         std::cout << std::endl << enemy->getInfo(true) << std::endl;
 
         is_player_turn = !is_player_turn;
+
+        battle.battleTickEvent.invoke();
     }
 }
 
@@ -130,6 +130,7 @@ void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
     }
 
     target->setHitPoint(target->getHitPoint() - damage);
+    std::cout << who->getName() << " attacks " << target->getName() << std::endl;
 }
 
 void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num) {
@@ -138,10 +139,10 @@ void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num)
             Attack(who, target);
             break;
         case 2: //USE WEAPON ABILITY ACTION
-            who->getWeapon()->ability();
+            std:: cout << who->getWeapon()->ability() << std::endl;
             break;
         case 3: //USE RACE ABILITY ACTION
-            who->getRace()->ability();
+            std::cout << who->getRace()->ability() << std::endl;
             break;
         case 4: //USE POTION ACTION
             std::cout << "Let's imagine that you have used a health potion!\n";

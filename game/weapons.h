@@ -39,7 +39,7 @@ public:
 
     [[nodiscard]] int getDamage() const;
 
-    virtual void ability() { std::cout << "The weapon has no ability!" << std::endl; };
+    virtual std::string ability() { return "Your weapon has no ability!"; };
 };
 
 #endif //CRPGAME_WEAPONS_H

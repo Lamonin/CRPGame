@@ -3,11 +3,13 @@
 void Data::DataHandler::OpenFile(const std::string &path) {
     std::cout << std::filesystem::current_path().string() << std::endl;
     std::ifstream reader(std::filesystem::current_path().string()+"/"+path);
+
     if (!reader.is_open())
     {
         assert("DataHandler.Openfile: Incorrect path!");
         return;
     }
+
     std::string result;
     std::string line;
     while (std::getline(reader, line))

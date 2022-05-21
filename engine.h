@@ -5,6 +5,7 @@
 #include <string>
 #include <conio.h>
 #include "bilist.h"
+#include "game/events.h"
 #include "game/character_editor.h"
 
 namespace crpg
@@ -13,6 +14,9 @@ namespace crpg
 
     class BattleProcessor
     {
+    public:
+        event<> battleTickEvent;
+
     public:
         BattleProcessor()=default;
         virtual ~BattleProcessor()=default;

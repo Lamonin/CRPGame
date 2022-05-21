@@ -9,7 +9,8 @@ protected:
     std::string name{};
     int strength{};
     int agility{};
-    int intelligence{};
+    int intellect{};
+    int ability_ticks;
 
 public:
     Race() = default;
@@ -23,7 +24,9 @@ public:
 
     [[nodiscard]] int getIntellect() const;
 
-    virtual void ability() = 0;
+    virtual void ability_tick() = 0;
+
+    virtual std::string ability() = 0;
 };
 
 class Human : public Race {
@@ -32,10 +35,12 @@ public:
         name = "HUMAN";
         strength = 12;
         agility = 12;
-        intelligence = 12;
+        intellect = 12;
     }
 
-    void ability() override;
+    std::string ability() override;
+
+    void ability_tick() override;
 };
 
 class Orc : public Race {
@@ -44,10 +49,12 @@ public:
         name = "ORC";
         strength = 14;
         agility = 12;
-        intelligence = 10;
+        intellect = 10;
     }
 
-    void ability() override;
+    std::string ability() override;
+
+    void ability_tick() override;
 };
 
 class Elf : public Race {
@@ -56,10 +63,12 @@ public:
         name = "ELF";
         strength = 10;
         agility = 12;
-        intelligence = 14;
+        intellect = 14;
     }
 
-    void ability() override;
+    std::string ability() override;
+
+    void ability_tick() override;
 };
 
 #endif //CRPGAME_RACES_H

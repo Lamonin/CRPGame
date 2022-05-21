@@ -55,6 +55,11 @@ public:
     [[nodiscard]] int getHitPoint() const;
     void setHitPoint(int hitpoint);
 
+    void battleTick()
+    {
+        race->ability_tick();
+    }
+
     [[nodiscard]] int getMaxHitPoint() const;
 
     [[nodiscard]] int getStrength() const;
