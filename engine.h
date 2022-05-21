@@ -6,6 +6,8 @@
 #include <conio.h>
 #include "bilist.h"
 #include "game/events.h"
+#include "game/heroes.h"
+#include "game/items.h"
 #include "game/character_editor.h"
 
 namespace crpg

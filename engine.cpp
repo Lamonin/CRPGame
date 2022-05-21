@@ -14,7 +14,7 @@ void crpg::Game::Play() {
         //User create a hero
         player = hero_editor.build();
 
-        for(int i = 0; i<RandomNumber::random(0,2); ++i)
+        for(int i = 0; i<RandomNumber::random(1,3); ++i)
         {
             player->addPotion(new HealthPotion(25));
         }
@@ -46,6 +46,7 @@ void crpg::Game::Play() {
         enemys.clear();
 
         if (player->getHitPoint()<0) {
+            system("cls");
             std::cout << "Unfortunately - you lose!\n";
         }
         else {
@@ -59,19 +60,15 @@ void crpg::Game::Play() {
 
 void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
     BattleProcessor battle;
-    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, *player));
-    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, *enemy));
+    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, player));
+    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, enemy));
 
     system("cls");
     std::cout << "[YOUR ENEMY]\n";
     std::cout << std::endl << enemy->getInfo(true) << std::endl;
-    WaitUserReaction("\nPress any key to start battle!");
+    WaitUserReaction("Press any key to start battle!");
 
-    bool is_player_turn = false;
-    if (player->getAgility()>enemy->getAgility())
-    {
-        is_player_turn = true;
-    }
+    bool is_player_turn = player->getAgility() > enemy->getAgility();
 
     while (player->getHitPoint()>0 && enemy->getHitPoint()>0) {
         if (is_player_turn) {
@@ -79,19 +76,19 @@ void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
         } else {
             system("cls");
             std::cout << "[ENEMY TURN]\n\n";
-
             battle.PerformBattleAction(enemy, player, battle.GetEnemyTurn());
-            WaitUserReaction("\nPress any key to continue!");
         }
+        WaitUserReaction("\nPress any key to continue!");
 
         system("cls");
-        std::cout << "YOUR TURN\n";
+        std::cout << "[YOUR TURN]\n";
         std::cout << std::endl << player->getInfo();
         std::cout << std::endl << enemy->getInfo(true) << std::endl;
 
-        is_player_turn = !is_player_turn;
+        if (!is_player_turn)
+            battle.battleTickEvent.invoke();
 
-        battle.battleTickEvent.invoke();
+        is_player_turn = !is_player_turn;
     }
 }
 
@@ -105,6 +102,7 @@ int crpg::BattleProcessor::GetPlayerTurn() {
     int num = SafeConsoleInput<int>("", "Incorrect action! Try again: ", [](int &t){
             return t > 0 && t < 5;
         });
+    std::cout << std::endl;
     return num;
 }
 
@@ -118,9 +116,10 @@ void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
 
     int damage = who_weapon->getDamage();
 
-    //Reduce physical damage by armor
+
     if (who_weapon->getDamageType() == DamageTypeEnum::Physical)
     {
+        //Reduce physical damage by armor
         switch (target_armor->getArmorType()) {
             case ArmorTypeEnum::Heavy:
                 damage = damage * 60 / 100;
@@ -132,14 +131,17 @@ void crpg::BattleProcessor::Attack(Hero *who, Hero *target) {
                 damage = damage * 90 / 100;
                 break;
         }
-        //Increase physical type damage by strength
+
+        //Calculate physical damage by strength
         damage = damage * who->getStrength() * 10 / 100;
     }
 
     if (who_weapon->getDamageType() == DamageTypeEnum::Magical)
     {
-        //Increase magical type damage by intellect
-        damage = damage * who->getIntellect() * 10 / 100;
+        //Increase magical damage by intellect coefficient
+        int k = who->getIntellect() - 10;
+        if (k<0) k = 0;
+        damage += (damage * k * 10) / 100;
     }
 
     target->setHitPoint(target->getHitPoint() - damage);
@@ -158,7 +160,7 @@ void crpg::BattleProcessor::PerformBattleAction(Hero*who, Hero* target, int num)
             std::cout << who->getRace()->ability() << std::endl;
             break;
         case 4: //USE POTION ACTION
-            std::cout << target->usePotion();
+            std::cout << who->usePotion();
             break;
     }
 }

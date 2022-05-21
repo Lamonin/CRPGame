@@ -1,6 +1,6 @@
 #include "races.h"
 
-const std::string &Race::getInfo() const {
+std::string Race::getInfo() const {
     return name;
 }
 

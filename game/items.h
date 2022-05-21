@@ -1,6 +1,8 @@
 #ifndef CRPGAME_ITEMS_H
 #define CRPGAME_ITEMS_H
 
+#include <iostream>
+
 template <class T>
 concept is_have_hp = requires(T m) {
     m.setHitPoint(0);
@@ -15,12 +17,11 @@ private:
 
 public:
     explicit HealthPotion(int potion_power = 0):potion_power(potion_power) { }
-    virtual ~HealthPotion() = default;
-
+    virtual ~HealthPotion(){std::cout << "DELETE HEALTH POTION";};
 
 public:
     template<is_have_hp T>
-    void Use(T target)
+    void Use(T &target)
     {
         target.setHitPoint(target.getHitPoint()+potion_power);
     }

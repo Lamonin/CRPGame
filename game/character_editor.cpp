@@ -1,7 +1,7 @@
 #include "character_editor.h"
 
 bool HeroEditor::ChooseGender() {
-    std::cout << "\n\n1] Male\n";
+    std::cout << "\n1] Male\n";
     std::cout << "2] Female\n";
     std::cout << "Character gender: ";
     int gender_num = SafeConsoleInput<int>("", "", [](int &t) { return t>0 && t<3; });

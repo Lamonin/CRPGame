@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <queue>
 #include "races.h"
 #include "hero_types.h"
 #include "weapons.h"
@@ -21,7 +22,7 @@ private:
     Weapon* weapon{};
     Armor* armor{};
 
-    std::vector<HealthPotion*> potions;
+    std::queue<HealthPotion*> potions;
 
 public:
     Hero()
@@ -38,17 +39,11 @@ public:
     //Reset HP to full
     void reset();
 
-    void battleTick()
-    {
-        race->ability_tick();
-    }
+    void battleTick();
 
     std::string usePotion();
 
-    void addPotion(HealthPotion* potion)
-    {
-        potions.push_back(potion);
-    }
+    void addPotion(HealthPotion *potion);
 
 public:
 

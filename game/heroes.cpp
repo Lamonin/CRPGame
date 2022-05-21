@@ -54,13 +54,14 @@ std::string Hero::getInfo(bool lite_info) {
         info += "Strength: " + std::to_string(getStrength()) + "\n";
         info += "Agility: " + std::to_string(getAgility()) + "\n";
         info += "Intellect: " + std::to_string(getIntellect()) + "\n\n";
-    }
 
-    if (potions.empty()) {
-        info += "You have no potions!\n";
-    }
-    else {
-        info += "You have " + std::to_string(potions.size()) + " healing potions!\n";
+        info += "[INVENTORY]\n";
+        if (potions.empty()) {
+            info += "You have no potions!\n";
+        }
+        else {
+            info += "You have " + std::to_string(potions.size()) + " healing potions!\n";
+        }
     }
 
     return info;
@@ -72,6 +73,7 @@ int Hero::getHitPoint() const {
 
 void Hero::setHitPoint(int hitpoint) {
     if (hitpoint > max_hit_point) hitpoint = max_hit_point;
+    if (hitpoint < 0) hitpoint = 0;
     Hero::hit_point = hitpoint;
 }
 
@@ -100,18 +102,24 @@ int Hero::getIntellect() const {
     return intellect;
 }
 
+void Hero::battleTick() {
+    race->ability_tick();
+}
+
 std::string Hero::usePotion() {
     if (potions.empty()) return "You have no potions!";
 
-    HealthPotion* potion = potions[potions.size()-1];
-    potions.pop_back();
+    HealthPotion* potion = potions.front();
 
     potion->Use(*this);
     std::string potion_msg = "You used a potion and recovered " + std::to_string(potion->getPotionPower()) + " hp.";
 
-    delete potion;
-
+    potions.pop();
     return potion_msg;
+}
+
+void Hero::addPotion(HealthPotion *potion) {
+    potions.push(potion);
 }
 
 bool RandomNumber::is_initialized = false;

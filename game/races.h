@@ -10,13 +10,13 @@ protected:
     int strength{};
     int agility{};
     int intellect{};
-    int ability_ticks;
+    int ability_ticks{};
 
 public:
     Race() = default;
     virtual ~Race() = default;
 
-    [[nodiscard]] const std::string &getInfo() const;
+    [[nodiscard]] std::string getInfo() const;
 
     [[nodiscard]] int getStrength() const;
 
@@ -24,9 +24,8 @@ public:
 
     [[nodiscard]] int getIntellect() const;
 
-    virtual void ability_tick() = 0;
-
     virtual std::string ability() = 0;
+    virtual void ability_tick() = 0;
 };
 
 class Human : public Race {
