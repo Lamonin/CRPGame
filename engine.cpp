@@ -60,8 +60,8 @@ void crpg::Game::Play() {
 
 void crpg::Game::BeginBattle(Hero *player, Hero *enemy) {
     BattleProcessor battle;
-    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, player));
-    battle.battleTickEvent.bind(std::bind(&Hero::battleTick, enemy));
+    battle.battleTickEvent.bind("playerTickHandle", std::bind(&Hero::battleTick, player));
+    battle.battleTickEvent.bind("enemyTickHandle", std::bind(&Hero::battleTick, enemy));
 
     system("cls");
     std::cout << "[YOUR ENEMY]\n";
