@@ -6,7 +6,7 @@
 #include <utility>
 
 
-enum ArmorTypeEnum { Heavy, Medium, Light };
+enum class ArmorTypeEnum { Heavy, Medium, Light };
 
 class Armor
 {

@@ -11,12 +11,12 @@ void Weapon::setName(const std::string &name) {
 std::string Weapon::getInfo() {
     std::string info = name;
 
-    if (damage_type == Physical)
+    if (damage_type == DamageTypeEnum::Physical)
         info += " [PHYSICAL]";
     else
         info += " [MAGICAL]";
 
-    if (weapon_type == Melee)
+    if (weapon_type == WeaponTypeEnum::Melee)
         info += " [MELEE]";
     else
         info += " [LONG RANGE]";

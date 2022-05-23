@@ -8,13 +8,13 @@ std::string Armor::getInfo() {
     std::string info = name + " [ARMOUR] ";
 
     switch (armor_type) {
-        case Heavy:
+        case ArmorTypeEnum::Heavy:
             info += "[HEAVY]";
             break;
-        case Medium:
+        case ArmorTypeEnum::Medium:
             info += "[MEDIUM]";
             break;
-        case Light:
+        case ArmorTypeEnum::Light:
             info += "[LIGHT]";
             break;
     }

@@ -5,16 +5,16 @@
 #include <string>
 #include <utility>
 
-enum WeaponTypeEnum { Melee, LongRange};
-enum DamageTypeEnum {Physical, Magical};
+enum class WeaponTypeEnum { Melee, LongRange};
+enum class DamageTypeEnum {Physical, Magical};
 
 class Weapon
 {
 private:
     std::string name;
     int damage{};
-    WeaponTypeEnum weapon_type{Melee};
-    DamageTypeEnum damage_type{Physical};
+    WeaponTypeEnum weapon_type{};
+    DamageTypeEnum damage_type{};
 
 public:
     Weapon() = default;
